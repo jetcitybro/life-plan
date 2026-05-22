@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Perfect Week">
+<title>Perfect Week — Robin Wenk</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#1F4E79;--blue:#2E75B6;--light-blue:#D6E4F0;--pale-blue:#EBF3FB;
+  --text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;
+  --bg:#fff;--bg2:#f8f9fa;--bg3:#f1f3f5;
+  --radius:14px;--radius-sm:10px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.12);
+  /* Account colors */
+  --c-god:#D6E4F0;--c-god-t:#1F4E79;
+  --c-intellectual:#EBF3FB;--c-intellectual-t:#1A5276;
+  --c-physical:#E1F5EE;--c-physical-t:#0E6655;
+  --c-marital:#F3E5F5;--c-marital-t:#6C3483;
+  --c-parental:#E8F5E9;--c-parental-t:#1D6B3A;
+  --c-social:#FEF9E7;--c-social-t:#7D6608;
+  --c-job:#E8EAF6;--c-job-t:#1A237E;
+  --c-hobbies:#EBF5FB;--c-hobbies-t:#1A5276;
+  --c-financial:#E9F7EF;--c-financial-t:#145A32;
+  --c-self:#EBF3FB;--c-self-t:#0f3460;
+  --c-work:#FFF8E7;--c-work-t:#5c3d00;
+  --c-family:#E8F5E9;--c-family-t:#0f3d1a;
+  --c-none:#f8f9fa;--c-none-t:#6b7280;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --text:#f0f4f8;--muted:#9ca3af;--border:#2d3748;
+    --bg:#111827;--bg2:#1f2937;--bg3:#253040;
+    --c-self:#0f2a42;--c-self-t:#90cdf4;
+    --c-work:#2a1f00;--c-work-t:#fcd34d;
+    --c-family:#0a2a14;--c-family-t:#86efac;
+    --c-none:#1f2937;--c-none-t:#6b7280;
+  }
+}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg2)}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto}
+
+/* TOP BAR */
+.topbar{background:var(--navy);padding:env(safe-area-inset-top,10px) 0 0;flex-shrink:0;position:relative;overflow:hidden}
+.topbar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(46,117,182,.4) 0%,transparent 60%);pointer-events:none}
+.topbar-inner{padding:12px 16px 0;position:relative;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-family:'DM Serif Display',serif;font-size:18px;color:#fff;font-weight:400}
+.topbar-sub{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px}
+.tabs{display:flex;gap:2px;padding:8px 8px 0;position:relative}
+.tab{flex:1;padding:8px 4px;border:none;border-radius:10px 10px 0 0;font-size:11px;font-weight:500;cursor:pointer;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px}
+.tab i{font-size:13px}
+.tab.active{background:var(--bg);color:var(--navy)}
+
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-area::-webkit-scrollbar{display:none}
+.view{display:none;padding:14px 12px 100px}
+.view.active{display:block}
+.section-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;padding:0 2px}
+.section-title:first-child{margin-top:4px}
+
+/* WEEK SELECTOR */
+.week-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;box-shadow:var(--shadow)}
+.week-bar select{flex:1;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;outline:none}
+.week-bar select option{background:var(--bg);color:var(--text)}
+.icon-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:2px;display:flex;align-items:center;transition:color .15s}
+.icon-btn:hover{color:var(--navy)}
+.icon-btn:active{transform:scale(.92)}
+
+/* INTENTION BOX */
+.intention-box{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.intention-label{font-size:10px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.intention-input{width:100%;border:none;background:none;font-family:'DM Serif Display',serif;font-style:italic;font-size:14px;color:var(--text);resize:none;outline:none;line-height:1.5}
+.intention-input::placeholder{color:var(--muted)}
+
+/* DAY COLUMNS */
+.days-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.days-scroll::-webkit-scrollbar{height:3px}
+.days-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.days-grid{display:grid;grid-template-columns:60px repeat(7,1fr);min-width:620px;gap:0}
+
+.day-header{background:var(--navy);color:#fff;text-align:center;padding:7px 4px;font-size:11px;font-weight:600;letter-spacing:.3px;position:sticky;top:0;z-index:3}
+.day-header:first-child{background:var(--bg3);color:var(--muted);font-size:9px;position:sticky;left:0;z-index:4;text-align:left;padding-left:6px}
+.day-header.today{background:var(--blue)}
+
+.time-label{background:var(--bg3);font-size:9px;font-weight:500;color:var(--muted);padding:4px 4px 4px 6px;border:0.5px solid var(--border);position:sticky;left:0;z-index:2;white-space:nowrap;vertical-align:top}
+
+.block-cell{border:0.5px solid var(--border);padding:0;vertical-align:top;position:relative;min-height:32px}
+.block-cell.empty{background:var(--bg)}
+.block-inner{height:100%;min-height:32px;padding:4px 5px;cursor:pointer;transition:filter .1s;display:flex;flex-direction:column;justify-content:center}
+.block-inner:active{filter:brightness(.93)}
+.block-text{font-size:9.5px;line-height:1.35;font-weight:500}
+.block-add{width:100%;height:100%;min-height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .2s;background:none;border:none;color:var(--muted);font-size:16px}
+.block-cell:hover .block-add{opacity:1}
+.block-cell.empty:hover{background:var(--bg3)}
+
+/* SECTION DIVIDERS */
+.section-divider td{font-weight:700;font-size:9px;letter-spacing:.8px;padding:5px 6px;color:#fff}
+.sr-self td{background:var(--navy)}
+.sr-work td{background:var(--blue)}
+.sr-family td{background:var(--navy)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px env(safe-area-inset-bottom,20px);width:100%;max-width:430px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-md)}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.modal-title span{color:var(--navy)}
+.modal label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:5px;margin-top:14px}
+.modal label:first-of-type{margin-top:0}
+.modal input[type=text],.modal textarea,.modal select{width:100%;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.modal input[type=text]:focus,.modal textarea:focus,.modal select:focus{border-color:var(--blue)}
+.modal textarea{resize:none;height:60px;line-height:1.5}
+.modal select{cursor:pointer}
+.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.color-opt{border:2px solid transparent;border-radius:8px;padding:8px 4px;cursor:pointer;text-align:center;font-size:10px;font-weight:600;transition:all .15s}
+.color-opt.selected{border-color:var(--navy)}
+.modal-actions{display:flex;gap:8px;margin-top:18px}
+.btn{flex:1;padding:12px;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-danger{background:#fee2e2;color:#b91c1c}
+.btn-cancel{background:var(--bg3);color:var(--muted)}
+
+/* DAILY NOTES */
+.note-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.note-day{font-size:11px;font-weight:600;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.note-input{width:100%;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:none;outline:none;line-height:1.6;min-height:60px}
+.note-input::placeholder{color:var(--muted)}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:500;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* WEEK CARDS */
+.week-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:12px}
+.week-card:active{transform:scale(.97)}
+.week-card-info{flex:1}
+.week-card-name{font-size:14px;font-weight:600}
+.week-card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.week-card-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px}
+.badge-template{background:var(--pale-blue);color:var(--navy)}
+.badge-week{background:#E8F5E9;color:#1D6B3A}
+.badge-active{background:#FFF8E7;color:#7D6608}
+
+.new-week-btn{width:100%;padding:13px;border:1.5px dashed var(--border);border-radius:var(--radius);background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.new-week-btn:hover{border-color:var(--blue);color:var(--blue)}
+.new-week-btn:active{transform:scale(.97)}
+
+.bottom-safe{height:env(safe-area-inset-bottom,0);background:var(--bg2);flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <h1>Perfect Week</h1>
+      <div class="topbar-sub" id="active-week-label">Robin Wenk · 2026</div>
+    </div>
+    <button class="icon-btn" style="color:rgba(255,255,255,.7)" onclick="switchTab('weeks')" title="Manage weeks">
+      <i class="ti ti-stack"></i>
+    </button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('schedule')"><i class="ti ti-calendar-week"></i> Schedule</button>
+    <button class="tab" onclick="switchTab('notes')"><i class="ti ti-notes"></i> Notes</button>
+    <button class="tab" onclick="switchTab('weeks')"><i class="ti ti-stack"></i> Weeks</button>
+  </div>
+</div>
+
+<div class="scroll-area">
+
+  <!-- SCHEDULE TAB -->
+  <div id="tab-schedule" class="view active">
+    <div class="week-bar">
+      <i class="ti ti-calendar" style="color:var(--blue);font-size:16px"></i>
+      <select id="week-select" onchange="loadWeek(this.value)"></select>
+      <button class="icon-btn" onclick="switchTab('weeks')" title="Manage weeks"><i class="ti ti-pencil"></i></button>
+    </div>
+
+    <div class="intention-box">
+      <div class="intention-label"><i class="ti ti-target" style="font-size:13px"></i> Weekly Intention</div>
+      <textarea class="intention-input" id="intention-input" rows="2" placeholder="What is your focus and intention for this week?" oninput="saveIntention()"></textarea>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#D6E4F0"></div>God</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#EBF3FB"></div>Intellectual</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E1F5EE"></div>Physical</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F3E5F5"></div>Marital</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E8F5E9"></div>Parental</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FEF9E7"></div>Social</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E8EAF6"></div>Job</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#EBF5FB"></div>Hobbies</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E9F7EF"></div>Financial</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f8f9fa;border:1px solid #e5e7eb"></div>None</div>
+    </div>
+
+    <div class="days-scroll">
+      <table style="min-width:620px;border-collapse:collapse;width:100%" id="week-grid">
+      </table>
+    </div>
+  </div>
+
+  <!-- NOTES TAB -->
+  <div id="tab-notes" class="view">
+    <div class="week-bar">
+      <i class="ti ti-notes" style="color:var(--blue);font-size:16px"></i>
+      <select id="week-select-notes" onchange="loadWeek(this.value)"></select>
+    </div>
+    <div class="section-title">Daily notes</div>
+    <div id="notes-container"></div>
+  </div>
+
+  <!-- WEEKS TAB -->
+  <div id="tab-weeks" class="view">
+    <div class="section-title">Your weeks</div>
+    <div id="weeks-list"></div>
+    <button class="new-week-btn" onclick="createWeek('copy')">
+      <i class="ti ti-copy"></i> New week from template
+    </button>
+    <div style="height:10px"></div>
+    <button class="new-week-btn" onclick="createWeek('blank')">
+      <i class="ti ti-plus"></i> New blank week
+    </button>
+  </div>
+
+</div>
+<div class="bottom-safe"></div>
+
+<!-- BLOCK MODAL -->
+<div class="modal-overlay hidden" id="block-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">
+      <span id="modal-title-text">Edit block</span>
+      <button class="icon-btn" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <label>Label</label>
+    <input type="text" id="block-label-input" placeholder="e.g. Deep Work / MIT Course">
+    <label>Color / Account</label>
+    <div class="color-grid" id="color-grid"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="delete-btn" onclick="deleteBlock()" style="display:none">Delete</button>
+      <button class="btn btn-primary" onclick="saveBlock()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK MODAL -->
+<div class="modal-overlay hidden" id="week-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">
+      <span id="wm-title">Week details</span>
+      <button class="icon-btn" onclick="closeWeekModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <label>Week name</label>
+    <input type="text" id="wm-name" placeholder="e.g. Week of May 26">
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeWeekModal()">Cancel</button>
+      <button class="btn btn-danger" id="wm-delete-btn" onclick="deleteWeek()">Delete</button>
+      <button class="btn btn-primary" onclick="saveWeekMeta()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const TIMES = [];
+for(let h=4;h<23;h++) for(let m of[0,30]) TIMES.push(`${h%12||12}:${m.toString().padStart(2,'0')} ${h<12?'AM':'PM'}`);
+
+const COLORS = [
+  {id:'god',label:'God',bg:'#D6E4F0',text:'#1F4E79'},
+  {id:'intellectual',label:'Intellectual',bg:'#EBF3FB',text:'#1A5276'},
+  {id:'physical',label:'Physical',bg:'#E1F5EE',text:'#0E6655'},
+  {id:'marital',label:'Marital',bg:'#F3E5F5',text:'#6C3483'},
+  {id:'parental',label:'Parental',bg:'#E8F5E9',text:'#1D6B3A'},
+  {id:'social',label:'Social',bg:'#FEF9E7',text:'#7D6608'},
+  {id:'job',label:'Job',bg:'#E8EAF6',text:'#1A237E'},
+  {id:'hobbies',label:'Hobbies',bg:'#EBF5FB',text:'#1A5276'},
+  {id:'financial',label:'Financial',bg:'#E9F7EF',text:'#145A32'},
+  {id:'none',label:'None',bg:'#f8f9fa',text:'#6b7280'},
+];
+
+// ── DEFAULT TEMPLATE ──────────────────────────────────────────────────
+const DEFAULT_BLOCKS = [
+  // [timeIndex, dayIndex, label, colorId]
+  [0,0,'Quiet Time / Devotions','god'],[0,1,'Quiet Time / Devotions','god'],[0,2,'Quiet Time / Devotions','god'],[0,3,'Quiet Time / Devotions','god'],[0,4,'Quiet Time / Devotions','god'],
+  [1,0,'Quiet Time / Devotions','god'],[1,1,'Quiet Time / Devotions','god'],[1,2,'Quiet Time / Devotions','god'],[1,3,'Quiet Time / Devotions','god'],[1,4,'Quiet Time / Devotions','god'],
+  [2,5,'Quiet Time','god'],[2,6,'Quiet Time','god'],
+  [2,0,'Read / Personal Growth','intellectual'],[2,1,'Read / Personal Growth','intellectual'],[2,2,'Read / Personal Growth','intellectual'],[2,3,'Read / Personal Growth','intellectual'],[2,4,'Read / Personal Growth','intellectual'],
+  [3,0,'Circuit Training','physical'],[3,2,'Circuit Training','physical'],[3,4,'Circuit Training','physical'],
+  [3,1,'Cardio / Walk','physical'],[3,3,'Cardio / Walk','physical'],[3,5,'Cardio / Walk','physical'],
+  [4,0,'Circuit Training','physical'],[4,2,'Circuit Training','physical'],[4,4,'Circuit Training','physical'],
+  [4,1,'Cardio / Walk','physical'],[4,3,'Cardio / Walk','physical'],[4,5,'Cardio / Walk','physical'],
+  [5,0,'Shower, Dress & Eat','none'],[5,1,'Shower, Dress & Eat','none'],[5,2,'Shower, Dress & Eat','none'],[5,3,'Shower, Dress & Eat','none'],[5,4,'Shower, Dress & Eat','none'],[5,5,'Shower & Eat','none'],[5,6,'Shower & Eat','none'],
+  [6,0,'Scripture Mem.','god'],[6,1,'Scripture Mem.','god'],[6,2,'Scripture Mem.','god'],[6,3,'Scripture Mem.','god'],[6,4,'Scripture Mem.','god'],
+  [7,0,'Commute','none'],[7,1,'WFH Start','job'],[7,2,'Commute','none'],[7,3,'Commute','none'],[7,4,'WFH Start','job'],
+  [7,5,'Jiu-Jitsu (family)','parental'],[7,6,'Church Prep','god'],
+  [8,0,'Process Emails','job'],[8,1,'Coaching Biz 🔒','job'],[8,2,'Process Emails','job'],[8,3,'Process Emails','job'],[8,4,'Process Emails','job'],
+  [8,5,'Jiu-Jitsu (family)','parental'],[8,6,'Church','god'],
+  [9,0,'Deep Work','job'],[9,1,'Coaching Biz 🔒','job'],[9,2,'Deep Work','job'],[9,3,'Deep Work','job'],[9,4,'Deep Work','job'],
+  [9,6,'Church','god'],
+  [10,0,'Deep Work','job'],[10,1,'Deep Work','job'],[10,2,'Deep Work','job'],[10,3,'Deep Work','job'],[10,4,'Deep Work','job'],
+  [10,5,'Family / Errands','parental'],[10,6,'Church','god'],
+  [11,0,'Team Meetings','job'],[11,1,'Team Meetings','job'],[11,2,'Team Meetings','job'],[11,3,'Team Meetings','job'],[11,4,'Adhoc','job'],
+  [11,5,'Family / Errands','parental'],
+  [12,0,'Team Meetings','job'],[12,1,'Team Meetings','job'],[12,2,'Team Meetings','job'],[12,3,'Team Meetings','job'],[12,4,'Adhoc','job'],
+  [12,5,'Ice Skating','hobbies'],[12,6,'Lunch w/ Family','parental'],
+  [13,0,'Adhoc','job'],[13,1,'Extended Mtg','job'],[13,2,'Adhoc','job'],[13,3,'Extended Mtg','job'],[13,4,'Adhoc','job'],
+  [13,5,'Ice Skating','hobbies'],[13,6,'Lunch w/ Family','parental'],
+  [14,0,'Adhoc','job'],[14,1,'Extended Mtg','job'],[14,2,'Adhoc','job'],[14,3,'Extended Mtg','job'],[14,4,'Adhoc','job'],
+  [15,0,'Adhoc','job'],[15,1,'Extended Mtg','job'],[15,2,'Adhoc','job'],[15,3,'Extended Mtg','job'],[15,4,'Planning / MIT','intellectual'],
+  [15,5,'House Chores','none'],[15,6,'Family Time','parental'],
+  [16,0,'Lunch','none'],[16,1,'Lunch','none'],[16,2,'Lunch','none'],[16,3,'Lunch','none'],[16,4,'Lunch','none'],
+  [16,5,'House / Finances','financial'],[16,6,'Family Time','parental'],
+  [17,0,'Deep Work / MIT','intellectual'],[17,1,'Deep Work','job'],[17,2,'Deep Work / MIT','intellectual'],[17,3,'Deep Work','job'],[17,4,'Planning / MIT','intellectual'],
+  [17,6,'Family Time','parental'],
+  [18,0,'Deep Work / MIT','intellectual'],[18,1,'Deep Work','job'],[18,2,'Deep Work / MIT','intellectual'],[18,3,'Deep Work','job'],[18,4,'Planning / MIT','intellectual'],
+  [18,5,'Help Kids Study','parental'],[18,6,'Weekly Review','job'],
+  [19,0,'Client Meetings','job'],[19,1,'Client Meetings','job'],[19,2,'Client Meetings','job'],[19,3,'Client Meetings','job'],[19,4,'Adhoc','job'],
+  [19,5,'Help Kids Study','parental'],[19,6,'Weekly Review','job'],
+  [20,0,'Client Meetings','job'],[20,1,'Client Meetings','job'],[20,2,'Client Meetings','job'],[20,3,'Client Meetings','job'],[20,4,'Adhoc','job'],
+  [21,0,'Adhoc','job'],[21,1,'Adhoc','job'],[21,2,'Adhoc','job'],[21,3,'Adhoc','job'],[21,4,'Adhoc','job'],
+  [21,5,'Rest / Hobby','hobbies'],
+  [22,0,'Adhoc','job'],[22,1,'Adhoc','job'],[22,2,'Adhoc','job'],[22,3,'Adhoc','job'],[22,4,'Adhoc','job'],
+  [22,5,'Rest / Hobby','hobbies'],
+  [23,0,'Adhoc','job'],[23,1,'Adhoc','job'],[23,2,'Adhoc','job'],[23,3,'Adhoc','job'],[23,4,'Adhoc','job'],
+  [23,5,'Rest / Hobby','hobbies'],
+  [24,0,'Process Email','job'],[24,1,'Process Email','job'],[24,2,'Process Email','job'],[24,3,'Process Email','job'],[24,4,'Process Email','job'],
+  [25,0,'Commute','none'],[25,1,'WFH Wrap','job'],[25,2,'Commute','none'],[25,3,'Commute','none'],[25,4,'WFH Wrap','job'],
+  [26,0,'Dinner w/ Kids','parental'],[26,1,'Dinner w/ Kids','parental'],[26,2,'Dinner w/ Kids','parental'],[26,3,'Dinner w/ Kids','parental'],[26,4,'Date Night','marital'],
+  [26,5,'Dinner / Family','parental'],[26,6,'Dinner / Family','parental'],
+  [27,0,'Dinner w/ Kids','parental'],[27,1,'Dinner w/ Kids','parental'],[27,2,'Dinner w/ Kids','parental'],[27,3,'Dinner w/ Kids','parental'],[27,4,'Date Night','marital'],
+  [27,5,'Dinner / Family','parental'],[27,6,'Dinner / Family','parental'],
+  [28,0,'Bible Review / Kids','god'],[28,2,'Church (Wed)','god'],[28,4,'Kids Review','parental'],
+  [29,0,'Bible Review / Kids','god'],[29,1,'Guys Night','social'],[29,2,'Church (Wed)','god'],[29,3,'Personal / Rest','none'],[29,4,'Kids Review','parental'],
+  [29,5,'Personal','none'],
+  [30,0,'Read','intellectual'],[30,1,'Guys Night','social'],[30,2,'Wind Down','none'],[30,3,'Personal / Rest','none'],[30,4,'Free Time','hobbies'],
+  [30,5,'Personal','none'],[30,6,'Read / Scripture','god'],
+  [31,0,'Read','intellectual'],[31,2,'Wind Down','none'],[31,4,'Free Time','hobbies'],[31,6,'Read / Scripture','god'],
+  [32,0,'Scripture / Wind Down','god'],[32,1,'Wind Down','none'],[32,2,'Scripture / Wind Down','god'],[32,3,'Wind Down','none'],[32,4,'Wind Down','none'],
+  [32,5,'Wind Down','none'],[32,6,'Wind Down','none'],
+  [33,0,'Bed','none'],[33,1,'Bed','none'],[33,2,'Bed','none'],[33,3,'Bed','none'],[33,4,'Bed','none'],[33,5,'Bed','none'],[33,6,'Bed','none'],
+];
+
+function buildDefaultGrid(){
+  const grid={};
+  DEFAULT_BLOCKS.forEach(([t,d,label,color])=>{
+    if(!grid[t])grid[t]={};
+    grid[t][d]={label,color};
+  });
+  return grid;
+}
+
+// ── STORAGE ───────────────────────────────────────────────────────────
+const SK='pw_robin_2026';
+function load(){try{return JSON.parse(localStorage.getItem(SK)||'null');}catch(e){return null;}}
+function save(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}}
+
+let DB = load();
+if(!DB){
+  DB={
+    activeWeek:'template',
+    weeks:{
+      template:{
+        id:'template',name:'Master Template',type:'template',
+        intention:'',notes:{},grid:buildDefaultGrid(),created:Date.now()
+      }
+    }
+  };
+  save(DB);
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────
+let activeWeekId = DB.activeWeek||'template';
+let editingCell = null; // {timeIdx, dayIdx}
+let editingWeekId = null;
+let selectedColor = 'none';
+
+function getWeek(id){return DB.weeks[id]||DB.weeks['template'];}
+function getActive(){return getWeek(activeWeekId);}
+
+// ── COLOR HELPERS ─────────────────────────────────────────────────────
+function colorById(id){return COLORS.find(c=>c.id===id)||COLORS[COLORS.length-1];}
+
+// ── RENDER GRID ───────────────────────────────────────────────────────
+function renderGrid(){
+  const wk=getActive();
+  const grid=wk.grid||{};
+  const today=new Date().getDay();// 0=Sun,1=Mon
+  const todayCol=today===0?6:today-1;
+
+  let html=`<thead><tr>
+    <th style="background:var(--bg3);color:var(--muted);font-size:9px;text-align:left;padding:6px;position:sticky;left:0;z-index:4;min-width:62px">Time</th>
+    ${DAYS.map((d,i)=>`<th class="day-header${i===todayCol?' today':''}">${d}</th>`).join('')}
+  </tr></thead><tbody>`;
+
+  TIMES.forEach((time,ti)=>{
+    html+=`<tr>
+      <td class="time-label">${time}</td>
+      ${DAYS.map((_,di)=>{
+        const blk=grid[ti]&&grid[ti][di];
+        if(blk){
+          const c=colorById(blk.color);
+          return `<td class="block-cell" style="background:${c.bg}">
+            <div class="block-inner" onclick="openBlockModal(${ti},${di})">
+              <div class="block-text" style="color:${c.text}">${blk.label}</div>
+            </div>
+          </td>`;
+        }
+        return `<td class="block-cell empty">
+          <button class="block-add" onclick="openBlockModal(${ti},${di})"><i class="ti ti-plus"></i></button>
+        </td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html+='</tbody>';
+  document.getElementById('week-grid').innerHTML=html;
+}
+
+// ── RENDER NOTES ──────────────────────────────────────────────────────
+function renderNotes(){
+  const wk=getActive();
+  const notes=wk.notes||{};
+  const c=document.getElementById('notes-container');
+  c.innerHTML=DAYS.map((d,i)=>`
+    <div class="note-card">
+      <div class="note-day"><span>${d}</span></div>
+      <textarea class="note-input" placeholder="Notes for ${d}..." oninput="saveNote(${i},this.value)">${notes[i]||''}</textarea>
+    </div>
+  `).join('');
+}
+
+// ── RENDER WEEK SELECTOR ───────────────────────────────────────────────
+function renderWeekSelects(){
+  const weeks=Object.values(DB.weeks).sort((a,b)=>a.created-b.created);
+  const opts=weeks.map(w=>`<option value="${w.id}" ${w.id===activeWeekId?'selected':''}>${w.name}</option>`).join('');
+  ['week-select','week-select-notes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML=opts;
+  });
+  const active=getActive();
+  document.getElementById('active-week-label').textContent=`Robin Wenk · ${active.name}`;
+  const ii=document.getElementById('intention-input');
+  if(ii)ii.value=active.intention||'';
+}
+
+// ── RENDER WEEKS LIST ─────────────────────────────────────────────────
+function renderWeeksList(){
+  const weeks=Object.values(DB.weeks).sort((a,b)=>a.created-b.created);
+  document.getElementById('weeks-list').innerHTML=weeks.map(w=>`
+    <div class="week-card" onclick="selectAndEdit('${w.id}')">
+      <i class="ti ti-calendar-week" style="color:var(--blue);font-size:20px;flex-shrink:0"></i>
+      <div class="week-card-info">
+        <div class="week-card-name">${w.name}</div>
+        <div class="week-card-sub">${w.type==='template'?'Master template':'Week copy'} · ${new Date(w.created).toLocaleDateString()}</div>
+      </div>
+      <span class="week-card-badge ${w.type==='template'?'badge-template':w.id===activeWeekId?'badge-active':'badge-week'}">
+        ${w.type==='template'?'Template':w.id===activeWeekId?'Active':'Week'}
+      </span>
+    </div>
+  `).join('');
+}
+
+// ── WEEK ACTIONS ──────────────────────────────────────────────────────
+function loadWeek(id){
+  activeWeekId=id;
+  DB.activeWeek=id;
+  save(DB);
+  renderAll();
+}
+
+function selectAndEdit(id){
+  loadWeek(id);
+  openWeekModal(id);
+}
+
+function createWeek(mode){
+  const id='week_'+Date.now();
+  const now=new Date();
+  const label=`Week of ${now.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+  const templateGrid=mode==='copy'?JSON.parse(JSON.stringify(DB.weeks['template'].grid||buildDefaultGrid())):{};
+  DB.weeks[id]={id,name:label,type:'week',intention:'',notes:{},grid:templateGrid,created:Date.now()};
+  save(DB);
+  loadWeek(id);
+  switchTab('schedule');
+  renderWeeksList();
+}
+
+function deleteWeek(){
+  if(!editingWeekId||editingWeekId==='template'){alert("Can't delete the master template.");return;}
+  if(!confirm('Delete this week? This cannot be undone.'))return;
+  delete DB.weeks[editingWeekId];
+  if(activeWeekId===editingWeekId)activeWeekId='template';
+  DB.activeWeek=activeWeekId;
+  save(DB);
+  closeWeekModal();
+  renderAll();
+}
+
+function saveWeekMeta(){
+  const name=document.getElementById('wm-name').value.trim();
+  if(!name)return;
+  DB.weeks[editingWeekId].name=name;
+  save(DB);
+  closeWeekModal();
+  renderAll();
+}
+
+// ── BLOCK MODAL ───────────────────────────────────────────────────────
+function openBlockModal(ti,di){
+  editingCell={ti,di};
+  const wk=getActive();
+  const blk=wk.grid&&wk.grid[ti]&&wk.grid[ti][di];
+  document.getElementById('modal-title-text').textContent=`${TIMES[ti]} · ${DAYS[di]}`;
+  document.getElementById('block-label-input').value=blk?blk.label:'';
+  selectedColor=blk?blk.color:'none';
+  renderColorGrid();
+  document.getElementById('delete-btn').style.display=blk?'':'none';
+  document.getElementById('block-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('block-label-input').focus(),100);
+}
+
+function renderColorGrid(){
+  document.getElementById('color-grid').innerHTML=COLORS.map(c=>`
+    <div class="color-opt${c.id===selectedColor?' selected':''}"
+      style="background:${c.bg};color:${c.text};border-color:${c.id===selectedColor?c.text:'transparent'}"
+      onclick="selectColor('${c.id}')">
+      ${c.label}
+    </div>
+  `).join('');
+}
+
+function selectColor(id){
+  selectedColor=id;
+  renderColorGrid();
+}
+
+function saveBlock(){
+  const label=document.getElementById('block-label-input').value.trim();
+  if(!label){deleteBlock();return;}
+  const{ti,di}=editingCell;
+  const wk=getActive();
+  if(!wk.grid)wk.grid={};
+  if(!wk.grid[ti])wk.grid[ti]={};
+  wk.grid[ti][di]={label,color:selectedColor};
+  save(DB);
+  closeModal();
+  renderGrid();
+}
+
+function deleteBlock(){
+  if(!editingCell)return;
+  const{ti,di}=editingCell;
+  const wk=getActive();
+  if(wk.grid&&wk.grid[ti])delete wk.grid[ti][di];
+  save(DB);
+  closeModal();
+  renderGrid();
+}
+
+function closeModal(){
+  document.getElementById('block-modal').classList.add('hidden');
+  editingCell=null;
+}
+
+// ── WEEK MODAL ────────────────────────────────────────────────────────
+function openWeekModal(id){
+  editingWeekId=id;
+  const wk=DB.weeks[id];
+  document.getElementById('wm-title').textContent='Edit week';
+  document.getElementById('wm-name').value=wk.name;
+  document.getElementById('wm-delete-btn').style.display=id==='template'?'none':'';
+  document.getElementById('week-modal').classList.remove('hidden');
+}
+
+function closeWeekModal(){
+  document.getElementById('week-modal').classList.add('hidden');
+  editingWeekId=null;
+}
+
+// ── SAVE HELPERS ──────────────────────────────────────────────────────
+function saveIntention(){
+  const val=document.getElementById('intention-input').value;
+  getActive().intention=val;
+  save(DB);
+}
+
+function saveNote(dayIdx,val){
+  const wk=getActive();
+  if(!wk.notes)wk.notes={};
+  wk.notes[dayIdx]=val;
+  save(DB);
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelector(`.tab[onclick="switchTab('${name}')"]`).classList.add('active');
+  document.querySelector('.scroll-area').scrollTop=0;
+  if(name==='weeks')renderWeeksList();
+  if(name==='notes'){renderWeekSelects();renderNotes();}
+  if(name==='schedule'){renderWeekSelects();renderGrid();}
+}
+
+// ── CLOSE MODALS ON OVERLAY CLICK ─────────────────────────────────────
+document.getElementById('block-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('week-modal').addEventListener('click',function(e){if(e.target===this)closeWeekModal();});
+
+// ── INIT ──────────────────────────────────────────────────────────────
+function renderAll(){
+  renderWeekSelects();
+  renderGrid();
+  renderNotes();
+  renderWeeksList();
+}
+renderAll();
+</script>
+</body>
+</html>
